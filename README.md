@@ -38,7 +38,7 @@ include(FetchContent)
 
 FetchContent_Declare(
     hotreloadcpp
-    GIT_REPOSITORY "https://github.com/gayafhannah/hotreloadcpp"
+    GIT_REPOSITORY https://github.com/gayafhannah/hotreloadcpp.git
 )
 
 FetchContent_MakeAvailable(hotreloadcpp)
@@ -52,7 +52,7 @@ Clone the source to somewhere in your project, using `./libs` in this example
 
 ```bash
 cd ./libs
-git clone https://github.com/gayafhannah/hotreloadcpp
+git clone https://github.com/gayafhannah/hotreloadcpp.git
 ```
 
 Main `CMakeLists.txt`
