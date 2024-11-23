@@ -42,7 +42,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
 
-
+FetchContent_Declare(
+    cpptrace
+    GIT_REPOSITORY https://github.com/jeremy-rifkin/cpptrace.git
+    GIT_TAG        v0.6.2 # <HASH or TAG>
+)
+FetchContent_MakeAvailable(cpptrace)
 
 
 

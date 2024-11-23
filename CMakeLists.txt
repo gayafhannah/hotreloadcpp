@@ -64,7 +64,7 @@ set(CMAKE_SUPPORT_WINDOWS_EXPORT_ALL_SYMBOLS TRUE)
 set(CMAKE_EXECUTABLE_ENABLE_EXPORTS ON)
 
 
-add_subdirectory(old)
+# add_subdirectory(old)
 
 add_subdirectory(src)
 # add_subdirectory(hotreloadcpp)
