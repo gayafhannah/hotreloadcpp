@@ -1,0 +1,9 @@
+/build
+/.direnv
+/.vscode
+
+/.envrc
+/flake.nix
+/flake.lock
+
+/old
