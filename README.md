@@ -1,7 +1,7 @@
 
 # hotreloadcpp
 
-This is a library designed to make dynamically loading libraries easier, and to make hot reloading those libraries relatively seemless, while maintaining cross platform support.
+This is a library designed to make dynamically loading shared libraries easier, allow the use of arbitrary symbols, and to make hot reloading those libraries relatively seemless, while maintaining cross platform support.
 Theres plenty of libraries that can do some parts of this, but not all of it.
 
 Libraries like `cr.h` that facilitate hot reloading usually don't allow for the use of arbitrary symbols/functions in hot-reloaded libraries, and only give one fixed entrypoint into each library.
@@ -39,10 +39,11 @@ include(FetchContent)
 FetchContent_Declare(
     hotreloadcpp
     GIT_REPOSITORY "https://github.com/gayafhannah/hotreloadcpp"
-    GIT_TAG        "v2.2.1"
 )
 
 FetchContent_MakeAvailable(hotreloadcpp)
+
+target_link_libraries(${YOUR_PROJECT_NAME} hotreloadcpp)
 ```
 
 ### Using Cloned Source
@@ -58,6 +59,8 @@ Main `CMakeLists.txt`
 
 ```cmake
 add_subdirectory(libs/hotreloadcpp)
+
+target_link_libraries(${YOUR_PROJECT_NAME} hotreloadcpp)
 ```
 
 ### Examples
