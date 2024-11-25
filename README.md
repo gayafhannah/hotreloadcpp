@@ -1,14 +1,14 @@
 
 # hotreloadcpp
 
-This is a library designed to make dynamically loading shared libraries easier, allow the use of arbitrary symbols, and to make hot reloading those libraries relatively seemless, while maintaining cross platform support.
+This is a library designed to make dynamically loading shared libraries easier, allow the use of arbitrary symbols, and to make hot reloading relatively seemless, while maintaining cross platform support.
 Theres plenty of libraries that can do some parts of this, but not all of it.
 
-Libraries like `cr.h` that facilitate hot reloading usually don't allow for the use of arbitrary symbols/functions in hot-reloaded libraries, and only give one fixed entrypoint into each library.
+Libraries like `cr.h` that can do hot reloading usually don't allow for the use of arbitrary symbols/functions in hot-reloaded libraries, and only give one fixed entrypoint into each library.
 
-Libraries like `dynalo` and `dylib` allow for arbitrary symbol access, but dont have any hot reloading capabilities and require the user to implement their own wrapper around them.
+Libraries like `dynalo` and `dylib` do allow for arbitrary symbol access, but dont have any hot reloading capabilities and require you to implement their own wrapper around them.
 
-This library is designed to act as an amalgamation between both of these types of libraries.
+This library is designed to act as an amalgamation between both of these types of libraries, giving an api similar to dynalo/dylib, while also coming with a built-in hot reloading wrapper that still gives access to arbitrary symbols.
 
 ## Compatability
 
