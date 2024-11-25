@@ -14,7 +14,8 @@ This library is designed to act as an amalgamation between both of these types o
 
 Works on `Linux` and `Windows`
 
-Please see [Quirks on Windows](#quirks-on-windows) for ensuring Windows compatability
+> [!WARNING]
+> Please see [Quirks on Windows](#quirks-on-windows) for ensuring Windows compatability.
 
 `MacOS` support can be added if requested, but i dont have any way to actually test for MacOS
 
@@ -63,13 +64,15 @@ add_subdirectory(libs/hotreloadcpp)
 target_link_libraries(${YOUR_PROJECT_NAME} hotreloadcpp)
 ```
 
-### Examples
+## Examples
 
 Here are some examples of how to various interfaces provided by the hotreloadcpp, and one example of defining functions in a library.
 
+There is also an example in the `examples` folder that uses spdlog.
+
 ---
 
-#### Library Class
+### Library Class
 
 ```cpp
 int main(int argc, char *argv[]) {
@@ -90,7 +93,7 @@ int main(int argc, char *argv[]) {
 }
 ```
 
-#### Shared Library
+### Shared Library
 
 ```cpp
 extern "C" void testFunc1() {
@@ -104,7 +107,7 @@ extern "C" int testFunc2(std::string str) {
 
 ---
 
-#### ReloadableLibrary class
+### ReloadableLibrary class
 
 ```cpp
 int main(int argc, char *argv[]) {
@@ -125,7 +128,7 @@ int main(int argc, char *argv[]) {
 
 ---
 
-#### ReloadableLibrary class, with callbacks
+### ReloadableLibrary class, with callbacks
 
 ```cpp
 
@@ -156,7 +159,7 @@ int main(int argc, char *argv[]) {
 
 ---
 
-#### ReloadableLibraryVirtual class
+### ReloadableLibraryVirtual class
 
 Requires `std::bind_front` to be supported by your compiler
 
@@ -204,7 +207,19 @@ public:
 };
 ```
 
-### Quirks on Windows
+## Quirks on Windows
+
+> Using MSYS as a dev environment seems to have issues with correctly creating the `exports.def` files of some dependencies like spdlog, and keeps failing during linking. I have no idea if this is my MSYS install(never used MSYS before now since i never had a need to), or if it's some other weird windows shenannigans.
+>
+> However using the `ucrt-x86_64` build of llvm-mingw from https://github.com/mstorsjo/llvm-mingw seems to work fine when compiling under windows, no MSYS or cygwin needed! :3
+>
+> Otherwise you should be able to use a variant of mingw under WSL2 just fine without any issues.
+>
+> If anyone has any clue why MSYS seems to be having a hard time with it, please let me know.
+
+---
+
+Windows treats binaries differently and has way too many quirks that make it act very differently to other platforms.
 
 - Unlike DLL's(or linux executables) Executables on windows dont export symbols by default and can require some help to correctly export everything
 - Windows does not allow for unresolved symbols at compile-time and if a library requires symbols from anything else(exe or dll) then it MUST be linked during compilation

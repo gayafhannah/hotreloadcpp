@@ -163,6 +163,10 @@ void Library::close() {
         init(lib_path);
     }
 
+    ReloadableLibrary::~ReloadableLibrary() {
+        unload();
+    }
+
     bool ReloadableLibrary::checkForReload() {
         // std::filesystem::file_time_type tmpWriteTime;
         // std::filesystem::file_time_type writeTime = lastWriteTime();
@@ -196,6 +200,11 @@ void Library::close() {
             throw std::runtime_error("File does not exist");
         }
 
+        m_moduleTempPath = m_modulePath;
+        m_moduleTempPath += ".temp";
+        // TODO : Replace current `.temp` with the result of `std::chrono::steady_clock::now().time_since_epoch().count()`
+        // TODO : Add option to only use temporary copy so platforms that do not require it(linux) can skip creating/deleting new files each reload
+
         load();
         LOG_INFO("Loaded Plugin \"{}\"", m_modulePath.string());
     }
@@ -220,9 +229,12 @@ void Library::close() {
     }
     void ReloadableLibrary::tryLoad() {
         for (int i=0; i<m_retryCount; i++) {
-            //printf("Try %d\n", i);
+            // Update `m_lastWriteTime` with current value
             m_lastWriteTime = lastWriteTime();
-            try{m_library = Library(m_modulePath.string());} catch(...){std::this_thread::sleep_for(/*m_retryDelay*/ 10ms); continue;}
+            // Create temporary copy of library (Needed because windows)
+            std::filesystem::copy_file(m_modulePath, m_moduleTempPath, std::filesystem::copy_options::overwrite_existing);
+            // Do the load, if failed, wait small timeout before exiting to(hopefully) retry
+            try{m_library = Library(m_moduleTempPath.string());} catch(...){std::this_thread::sleep_for(/*m_retryDelay*/ 10ms); continue;}
             return;
         }
         LOG_ERROR("Failed to load plugin");
@@ -231,7 +243,7 @@ void Library::close() {
     void ReloadableLibrary::unload() {
         if (m_cbUnload) m_cbUnload(&m_library);
         m_library.close();
-        //printf("Unloaded\n");
+        std::filesystem::remove(m_moduleTempPath);
     }
 
 

@@ -129,7 +129,7 @@ public:
     ~Library();
 
     /// Loads a shared library using hotreload::open
-    explicit Library(const std::string& ib_path);
+    explicit Library(const std::string& lib_path);
 
     /// Returns a pointer to the @p func_name function using hotreload::get_symbol
     template <typename FunctionSignature>
@@ -168,12 +168,16 @@ public:
     };
 private:
     Library m_library;
+    // Actual path on-disk of the shared library to reload
     std::filesystem::path m_modulePath;
+    // Path of temporary copy of shared library to copy original to and to load instead of the original due to window's more harsh file locks
+    std::filesystem::path m_moduleTempPath;
+    // Time the currently loaded library was last updated.
     std::filesystem::file_time_type m_lastWriteTime;
     // How many times to attempt to open a library if it failed to dlopen
     int m_retryCount = 20;
     // Retry Delay in MS
-    int m_retryDelay = 10;
+    // int m_retryDelay = 10;
 protected:
     std::function<callback_t> m_cbLoad   = nullptr;
     std::function<callback_t> m_cbUnload = nullptr;
@@ -194,6 +198,8 @@ public:
     /// Loads a shared library. File must be accessible or exception will be thrown
     ReloadableLibrary(const std::string& lib_path, Callbacks callbacks);
     explicit ReloadableLibrary(const std::string& lib_path);
+
+    ~ReloadableLibrary();
 
     bool checkForReload();
 

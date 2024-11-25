@@ -25,16 +25,10 @@
 using namespace std::chrono_literals;
 
 
-#ifdef _WIN32
 #define LIB_DIR "./"
-#define LIBPLUGIN LIB_DIR "libplugin.dll"
-#define LIBGAMER  LIB_DIR "libgamer.dll"
+#ifdef _WIN32
 #define LIBPATH  LIB_DIR "libhotreload-exampleLibrary.dll"
 #else
-// #define LIB_DIR "../lib/"
-#define LIB_DIR "./"
-#define LIBPLUGIN LIB_DIR "libplugin.so"
-#define LIBGAMER  LIB_DIR "libgamer.so"
 #define LIBPATH  LIB_DIR "libhotreload-exampleLibrary.so"
 #endif
 
@@ -80,7 +74,11 @@ void test_ReloadableLibrary(std::string lib_path) {
             auto func = lib->get_symbol<void()>("setup");
             func();
         }
+        // Calling the function directly without first storing it in a function pointer
         lib.get_symbol<void()>("testFunc3")();
+        // Ask the library if we should exit the loop, break out of the loop if it returns `true` from `shouldExit`
+        std::function<bool()> shouldExit = lib.get_symbol<bool()>("shouldExit");
+        if (shouldExit()) break;
     }
 }
 
@@ -107,7 +105,11 @@ void test_ReloadableLibraryCallbacks(std::string lib_path) {
     while (1) {
         std::this_thread::sleep_for(100ms);
         lib.checkForReload();
+        // Calling the function directly without first storing it in a function pointer
         lib.get_symbol<void()>("testFunc3")();
+        // Ask the library if we should exit the loop, break out of the loop if it returns `true` from `shouldExit`
+        std::function<bool()> shouldExit = lib.get_symbol<bool()>("shouldExit");
+        if (shouldExit()) break;
     }
 }
 
@@ -124,22 +126,21 @@ int main(int argc, char *argv[]) {
     cpptrace::register_terminate_handler();
     std::signal(SIGSEGV, signal_handler);
 
-    //doWeirdThingsWawa();
-    //return 0;
-    // auto new_default_logger = spdlog::default_logger()->clone("main");
-    spdlog::set_pattern("[%T.%e] [%n] [%^%l%$] %v");
-    spdlog::set_default_logger(spdlog::default_logger()->clone("main"));
-
-    // Random things
-    printf("WAWAO\n");
+    // Random things that i always put right at the top of almost every project's main
+    printf("Heyo! :3\n");
+    printf("Here's some compiler info!\n");
     printf("Using C++%02d\n", (__cplusplus==199711L)?7:(__cplusplus==201103L)?11:(__cplusplus==201402L)?14:(__cplusplus==201703L)?17:(__cplusplus==202002L)?20:(__cplusplus==202302L)?23:0);
     printf("C++ Version: %ld\n", __cplusplus);
     #ifdef __clang_version__
-    printf("Clang Ver %s\n", __clang_version__);
+    printf("Clang Version: %s\n", __clang_version__);
     #else
-    printf("GCC Ver %d.%d.%d\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+    printf("GCC Version: %d.%d.%d\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
     #endif
-    printf("\nam beans c:\n\n");
+    printf("\n");
+
+
+    spdlog::set_pattern("[%T.%e] [%n] [%^%l%$] %v");
+    spdlog::set_default_logger(spdlog::default_logger()->clone("main"));
 
 
     test_Library(LIBPATH);
@@ -147,6 +148,6 @@ int main(int argc, char *argv[]) {
     test_ReloadableLibraryCallbacks(LIBPATH);
 
 
-    printf("Exiting :3\n");
+    printf("It's time to exit! :3\n");
     return 0;
 }
