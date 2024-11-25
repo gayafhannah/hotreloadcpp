@@ -211,7 +211,7 @@ public:
 
 > Using MSYS as a dev environment seems to have issues with correctly creating the `exports.def` files of some dependencies like spdlog, and keeps failing during linking. I have no idea if this is my MSYS install(never used MSYS before now since i never had a need to), or if it's some other weird windows shenannigans.
 >
-> However using the `ucrt-x86_64` build of llvm-mingw from https://github.com/mstorsjo/llvm-mingw seems to work fine when compiling under windows, no MSYS or cygwin needed! :3
+> However using the `ucrt-x86_64` build of llvm-mingw from [https://github.com/mstorsjo/llvm-mingw](https://github.com/mstorsjo/llvm-mingw) seems to work fine when compiling under windows, no MSYS or cygwin needed! :3
 >
 > Otherwise you should be able to use a variant of mingw under WSL2 just fine without any issues.
 >

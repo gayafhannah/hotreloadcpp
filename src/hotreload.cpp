@@ -137,18 +137,21 @@ void Library::close() {
         m_library(std::move(other.m_library)),
         m_modulePath(other.m_modulePath),
         m_lastWriteTime(other.m_lastWriteTime),
-        m_cbLoad(other.m_cbLoad),
-        m_cbUnload(other.m_cbUnload) {
+        m_moduleTempPath(std::move(other.m_moduleTempPath)),
+        m_cbLoad(std::move(other.m_cbLoad)),
+        m_cbUnload(std::move(other.m_cbUnload)) {
         //other.m_handle = native::invalid_handle();
     }
 
     // Move object(Replace existing). Old object is invalid
     ReloadableLibrary& ReloadableLibrary::operator=(ReloadableLibrary&& other) {
-        m_library       = std::move(other.m_library);
-        m_modulePath    = other.m_modulePath;
-        m_lastWriteTime = other.m_lastWriteTime;
-        m_cbLoad        = other.m_cbLoad;
-        m_cbUnload      = other.m_cbUnload;
+        unload();
+        m_library        = std::move(other.m_library);
+        m_modulePath     = other.m_modulePath;
+        m_lastWriteTime  = other.m_lastWriteTime;
+        m_moduleTempPath = std::move(other.m_moduleTempPath);
+        m_cbLoad         = std::move(other.m_cbLoad);
+        m_cbUnload       = std::move(other.m_cbUnload);
         return *this;
     }
 
