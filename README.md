@@ -8,7 +8,7 @@ Libraries like `cr.h` that can do hot reloading usually don't allow for the use 
 
 Libraries like `dynalo` and `dylib` do allow for arbitrary symbol access, but dont have any hot reloading capabilities and require you to implement their own wrapper around them.
 
-This library is designed to act as an amalgamation between both of these types of libraries, giving an api similar to dynalo/dylib, while also coming with a built-in hot reloading wrapper that still gives access to arbitrary symbols.
+A simple summary is it act's like an amalgamation between both of those types of libraries, giving an api similar to dynalo/dylib, while also coming with a built-in hot reloading wrapper that still gives access to arbitrary symbols.
 
 ## Compatability
 
