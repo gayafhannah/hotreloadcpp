@@ -197,7 +197,11 @@ public:
 
     /// Loads a shared library. File must be accessible or exception will be thrown
     ReloadableLibrary(const std::string& lib_path, Callbacks callbacks);
+    // ReloadableLibrary(const std::string& lib_path, std::function<callback_t> loadCallback = nullptr, std::function<callback_t> unloadCallback = nullptr);
     explicit ReloadableLibrary(const std::string& lib_path);
+
+    void setLoadCallback(std::function<callback_t>   loadCallback)   {m_cbLoad   = loadCallback;}
+    void setUnloadCallback(std::function<callback_t> unloadCallback) {m_cbUnload = unloadCallback;}
 
     ~ReloadableLibrary();
 
@@ -226,11 +230,13 @@ private:
 /// Experimental wrapper for `ReloadableLibrary` with callbacks mapped to virtual functions
 class ReloadableLibraryVirtual: public ReloadableLibrary {
 public:
-    ReloadableLibraryVirtual() {
-        m_cbLoad   = std::bind_front(&ReloadableLibraryVirtual::onLoad,   this);
-        m_cbUnload = std::bind_front(&ReloadableLibraryVirtual::onUnload, this);
-    }
+    ReloadableLibraryVirtual();
 private:
+    // Move object(Constructor). Old object is invalid
+    ReloadableLibraryVirtual(ReloadableLibraryVirtual&& other);
+    // Move object(Replace existing). Old object is invalid
+    ReloadableLibraryVirtual& operator=(ReloadableLibraryVirtual&& other);
+    void updateCallbacks();
     virtual void onLoad(Library* library) = 0;
     virtual void onUnload(Library* library) = 0;
 };

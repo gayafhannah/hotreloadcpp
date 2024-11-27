@@ -253,7 +253,32 @@ void Library::close() {
 
 
 
+/* -------- ReloadableLibraryVirtual Library Wrapper -------- */
 
+    ReloadableLibraryVirtual::ReloadableLibraryVirtual() {
+        updateCallbacks();
+    }
+
+    // Move object(Constructor). Old object is invalid
+    ReloadableLibraryVirtual::ReloadableLibraryVirtual(ReloadableLibraryVirtual&& other):
+        ReloadableLibrary(std::move(other)) {
+            updateCallbacks();
+        //other.m_handle = native::invalid_handle();
+    }
+
+    // Move object(Replace existing). Old object is invalid
+    ReloadableLibraryVirtual& ReloadableLibraryVirtual::operator=(ReloadableLibraryVirtual&& other) {
+        ReloadableLibrary::operator=(std::move(other));
+        updateCallbacks();
+        return *this;
+    }
+
+    void ReloadableLibraryVirtual::updateCallbacks() {
+        // m_cbLoad   = std::bind_front(&ReloadableLibraryVirtual::onLoad,   this);
+        // m_cbUnload = std::bind_front(&ReloadableLibraryVirtual::onUnload, this);
+        setLoadCallback(std::bind_front(&ReloadableLibraryVirtual::onLoad,     this));
+        setUnloadCallback(std::bind_front(&ReloadableLibraryVirtual::onUnload, this));
+    }
 
 
 }

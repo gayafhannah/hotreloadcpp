@@ -133,6 +133,17 @@ The callback's type is `void (hotreload::Library* library)`
 ---
 
 ```cpp
+void setLoadCallback(std::function<callback_t>   loadCallback);
+void setUnloadCallback(std::function<callback_t> unloadCallback);
+```
+
+Update the callbacks to use on reload.
+
+This is useful if your callbacks reference member functions of a class that is being moved. An example is in the experimental `ReloadableLibraryVirtual` class.
+
+---
+
+```cpp
 bool checkForReload();
 ```
 

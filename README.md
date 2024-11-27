@@ -29,6 +29,7 @@ Works on `Linux` and `Windows`
   - A class that contains the native library handle and incorporates its own member functions to manage it via previously mentioned functions
 - **Hot Reloadable Library wrapper class**
   - A class that wraps around the `Library` class that can check if the library's file has been replaced/updated and automatically reload it.
+  - Can run custom callbacks during each reload.
 
 ## Installation
 
@@ -179,7 +180,7 @@ class TestLibrary: hotreload::ReloadableLibraryVirtual {
         auto loadFunc = library->get_symbol<fnLoad_t>("fnLoad");
         if (loadFunc) loadFunc(m_scene);
 
-        // Example locating symbol at library load time
+        // Example locating symbol at library load time so it does not need to call dlsym/GetProcAddress every time it's run
         fn_drawGui = library->get_symbol<fnDrawGui_t>("drawGui");
     }
     void onUnload(hotreload::Library* library) {
@@ -194,11 +195,13 @@ public:
     }
     // Custom entrypoints
     void drawGui() {
-        // Checking for reload inside these functions is not required as it can always be called from outside of this class, but this is an example of when you may want it to check every time a particular function is called.
+        // Checking for reload inside these functions is not required as it can instead be called from outside of this class, but this is an example of when you may want it to check every time a particular function is called.
         checkForReload();
+        // Using the stored function pointer thats set in the onLoad function.
         if (fn_drawGui) fn_drawGui();
     }
     float getFrameTimes() {
+        // Looking up the function pointer every time, simpler to implement but has more overhead and should probably be avoided if the function is being called many times a second.
         auto func = library->get_symbol<fnGetFrameTimes_t>("getFrameTimes");
         float ret = 0;
         if (func) ret = func();
